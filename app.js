@@ -8,7 +8,11 @@ const Flight = require("./db/Flight")
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: "https://flight-planner-eta.vercel.app",
+    methods: ["POST", "GET", "DELETE", "PUT"],
+    credentials: true
+}));
 
 app.post("/signup", async (req, resp) => {
     let user = new User(req.body);
@@ -42,42 +46,40 @@ app.post("/add-city", async (req, resp) => {
 
 app.get("/cities", async (req, resp) => {
     const cities = await City.find();
-    if(cities.length > 0){
+    if (cities.length > 0) {
         resp.send(cities)
     }
     else {
-        resp.send({result: "No cities found"})
+        resp.send({ result: "No cities found" })
     }
 })
 
 app.delete("/city/:id", async (req, resp) => {
-    let result = await City.deleteOne({_id: req.params.id});
+    let result = await City.deleteOne({ _id: req.params.id });
     resp.send(result);
 })
 
 app.get("/city/:id", async (req, resp) => {
-    let result = await City.findOne({_id:req.params.id})
-    if(result)
-    {
+    let result = await City.findOne({ _id: req.params.id })
+    if (result) {
         resp.send(result)
     }
-    else
-    {
-        resp.send({result:"No City Found"})
+    else {
+        resp.send({ result: "No City Found" })
     }
 })
 
-app.put("/city/:id", async (req,resp) => {
+app.put("/city/:id", async (req, resp) => {
     let result = await City.updateOne(   /* it has two parameters */
-        {_id:req.params.id},  /* on which behalf we update the data */
-        {$set: req.body}      /* and what we want to update is in the second object */
+        { _id: req.params.id },  /* on which behalf we update the data */
+        { $set: req.body }      /* and what we want to update is in the second object */
     )
     resp.send(result)
 })
 
-app.get("/search/:key", async (req,resp) => {
+app.get("/search/:key", async (req, resp) => {
     let result = await City.find({
-        "$or":[
+        "$or": [
             {
                 // name: { $regex: req.params.key } simple search
                 name: { $regex: new RegExp(req.params.key, 'i') } //to remove case sensitivity
@@ -99,22 +101,22 @@ app.post("/add-flight", async (req, resp) => {
 
 app.get("/flights", async (req, resp) => {
     const flights = await Flight.find();
-    if(flights.length > 0){
+    if (flights.length > 0) {
         resp.send(flights)
     }
     else {
-        resp.send({result: "No flights found"})
+        resp.send({ result: "No flights found" })
     }
 })
 
 app.delete("/flight/:id", async (req, resp) => {
-    let result = await Flight.deleteOne({_id: req.params.id});
+    let result = await Flight.deleteOne({ _id: req.params.id });
     resp.send(result);
 })
 
-app.get("/search-flight/:key", async (req,resp) => {
+app.get("/search-flight/:key", async (req, resp) => {
     let result = await Flight.find({
-        "$or":[
+        "$or": [
             {
                 // name: { $regex: req.params.key } simple search
                 origin: { $regex: new RegExp(req.params.key, 'i') } //to remove case sensitivity
@@ -127,15 +129,15 @@ app.get("/search-flight/:key", async (req,resp) => {
     resp.send(result)
 })
 
-app.put("/flight/:id", async (req,resp) => {
+app.put("/flight/:id", async (req, resp) => {
     let result = await Flight.updateOne(   /* it has two parameters */
-        {_id:req.params.id},  /* on which behalf we update the data */
-        {$set: req.body}      /* and what we want to update is in the second object */
+        { _id: req.params.id },  /* on which behalf we update the data */
+        { $set: req.body }      /* and what we want to update is in the second object */
     )
     resp.send(result)
 })
 
-app.get("/", (req,resp) => {
+app.get("/", (req, resp) => {
     app.use(express.static(path.resolve(__dirname, "frontend", "build")));
     resp.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
 })
