@@ -8,7 +8,13 @@ const Flight = require("./db/Flight")
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+const corsConfig = {
+    origin: "",
+    methods: ["POST", "GET", "DELETE", "PUT"],
+    credentials: true
+}
+app.options("", cors(corsConfig))
+app.use(cors(corsConfig));
 
 app.post("/signup", async (req, resp) => {
     let user = new User(req.body);
