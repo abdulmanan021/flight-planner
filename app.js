@@ -9,7 +9,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: "https://flight-planner-eta.vercel.app",
+    origin: "https://flight-planner-eta.vercel.app/",
     methods: ["POST", "GET", "DELETE", "PUT"],
     credentials: true
 }));
