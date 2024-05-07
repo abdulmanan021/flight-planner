@@ -8,7 +8,13 @@ const Flight = require("./db/Flight")
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors(
+    {
+        origin: ["https://flight-planner-eta.vercel.app"],
+        methods: ["POST","GET"],
+        credentials: true
+    }
+));
 
 app.post("/signup", async (req, resp) => {
     let user = new User(req.body);
